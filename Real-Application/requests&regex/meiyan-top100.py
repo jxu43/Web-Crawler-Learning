@@ -2,6 +2,7 @@ import requests
 from requests.exceptions import RequestException
 import re
 import json
+from multiprocessing import Pool
 
 def get_one_page(url):
 
@@ -15,7 +16,8 @@ def get_one_page(url):
             return response.text
         else:
             return None
-    except: RequestException
+    except RequestException:
+        return None
     # parse_one_page(response.text)
 
 def parse_one_page(html):
@@ -48,5 +50,8 @@ def main(offset):
         write_to_file(result)
 
 if __name__ == '__main__':
-    for i in range(10):
-        main(i*10)
+    pool = Pool()
+    pool.map(main, [i*10 for i in range(10)])
+    pool.close()
+    #用来排序的
+    pool.join()
